@@ -18,6 +18,8 @@
 \input{setup/hyphenations.tex}% 
 \input{setup/macros.tex}% my new macros
 
+\addbibresource{bib/mybib.bib}
+
 \begin{document}
 %frontmatter
 \pagestyle{empty} %disable headers and footers
@@ -33,6 +35,6 @@
 \input{sections/chapters/introduction.tex}
 \input{sections/chapters/data_discovery_tool.tex}
 \input{sections/chapters/conclusion.tex}
+\cite{Madsen2010}
 \printbibliography[heading=bibintoc]
-\label{bib:mybiblio}
 \end{document}
