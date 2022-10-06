@@ -1,0 +1,78 @@
+\subsection{Data Exploration}
+
+During the first stages of the project, we implemented prototypes that helped us better understand the goal of the project
+and the steps needed to achieve it.
+We defined a smaller objective, which would be achieved during the first few weeks of work.
+This objective was the construction of a clear map of our data.
+In order to gain insights from an unstructured dataset, we first need to extract as much information about it as possible
+and represent it in a structured manner.
+This is called metadata.
+Ralph Kimball describes metadata as ``the DNA of the data warehouse''\cite{Kimball2008} because of its importance in how data is stored.
+Exploring the input by extracting and structuring metadata became the first preliminary goal of the project, which we tried
+to achieve through prototypes.
+\bigbreak
+We split this goal further into steps:
+\begin{itemize}
+    \item Extract basic information about each file (size, number of rows, column names, data types, aggregate functions)
+    \item Represent the extracted information in a human-readable manner
+    \item Store the metadata in an efficient format
+    \item Build potential relationships between files through column matching
+    \item Store the results from column matching as metadata
+\end{itemize}
+
+\subsection{Column Matching}
+
+Column matching is a naive approach to data discovery.
+Just because two columns look similar, it does not mean that the tables are related.
+However, it is a good starting point.
+Knowing if a table is timestamped and, if it is, which column holds the date \& time information, is incredibly useful for
+the larger goal of the project.
+In the beginning, we look at two files and try to match columns through various similarity techniques.
+The results produced (as, for example, percentages) are then stored together with the rest of the metadata.
+In later steps, we can use them to ``label'' columns or tables against an established set of templates.
+
+\bigbreak
+
+We identified three components which can tell whether two columns contain the same kind of data: the column name, the data
+type and the content.
+The first two are quick to analyse but provide little insight or may even point us in the wrong direction, while the third
+element is reliable, but can have a big impact on performance.
+Data similarity is an ambiguous topic, but we will nonetheless try to find methods of completing this task, for each of the
+three elements of a column.
+The results will be expressed as percentages, which we will then average into a final value representing the
+\textit{degree of certainty} that two columns contain the same kind of data.
+
+\bigbreak
+
+If we look at column names as strings of characters, we can determine the longest continuous matching subsequence (LCS) between
+the two strings, using, for example, Python's \textit{SequenceMatcher} class.
+This also provides a method which produces a ratio of similarity, based on the amount of remaining characters after computing the LCS\@.
+This approach seems to yield good results when the column names are similar in terms of characters.
+\todo{Add results from using this method}
+An alternative is the Levenshtein distance, which can more accurately show the difference between two sequences.
+\todo{Implement Levenshtein distance and show results}
+\todo{Add reference}
+To improve the quality of results, we can explore another facet of the column names: their meaning.
+If we look at these strings as words, we can use a dictionary to check their similarity.
+\todo{Implement a method to identify synonyms and show results}
+The data types provide the least amount of information about the similarity of the two columns.
+We can check whether they share the same data type (numerical, strings, boolean), but this does not mean the contents
+are related.
+However, finding numerical data gives a strong probability that the data in the column is continuous, while finding any other
+data type may show that the data is categorical.
+\todo{Add reference}
+Unfortunately, this can only be verified by looking at the data itself.
+Looping through the rows and comparing them is costly.
+If we are dealing with categorical data, there might be value in comparing the sets of categories and their frequencies.
+\todo{Show results}
+Continuous, numerical data can be compared using mathematical formulas, such as the Pearson correlation coefficient.
+\todo{Add reference}
+\todo{Show results}
+Another useful metric we can compute is the p-value.
+\todo{Add reference}
+\todo{Show results}
+
+\bigbreak
+
+Given the varying significance of these results, adding weights to the final computation is crucial.
+\todo{How?}
