@@ -48,13 +48,127 @@ If we look at column names as strings of characters, we can determine the longes
 the two strings, using, for example, Python's \textit{SequenceMatcher} class.
 This also provides a method which produces a ratio of similarity, based on the amount of remaining characters after computing the LCS\@.
 This approach seems to yield good results when the column names are similar in terms of characters.
-\todo{Add results from using this method}
 An alternative is the Levenshtein distance, which can more accurately show the difference between two sequences.
-\todo{Implement Levenshtein distance and show results}
-\todo{Add reference}
 To improve the quality of results, we can explore another facet of the column names: their meaning.
 If we look at these strings as words, we can use a dictionary to check their similarity.
-\todo{Implement a method to identify synonyms and show results}
+
+\subsubsection{A comparison between three methods of determining column name similarity}
+Word similarity is a vast topic, and it becomes even larger when considering the possibility that column names are not
+necessarily words from the dictionary.
+We conducted an investigation into the difference between the three methods identified above of exploring this topic,
+in order to determine which would be the most beneficial for our project, or whether we should use them together.
+Initial tests were run on a hardcoded list of common column names in a commercial or managerial database: customer\_id,
+first\_name, last\_name, phone, email, workdept, salary, deptnumb, manager, majproj, etc.
+
+\bigbreak
+
+We ran three algorithms on all pairs of terms in this list:
+\begin{itemize}
+    \item Longest Continuous (Matching) Subsequence (LCS), as implemented by the Python \textit{difflib} library
+    \item The Levenshtein distance, as implemented by the Python \textit{Levenshtein} library
+    \item The Wu-Palmer Similarity, as implemented by the Python Natural Language Toolkit (NLTK)
+\end{itemize}
+
+\bigbreak
+
+We developed two different views of the results of these tests, to compare and contrast them.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth, angle=270]{figures/names_lcs_levenshtein_wordnet_table}
+    \caption{Full results of LCS, Levenshtein, and Wu-Palmer on a list of column names}\label{fig:figure}
+\end{figure}
+
+Due to its size, it is difficult to extract any meaningful information from this table.
+Nevertheless, at a first glance, we can observe that the values in the LCS and Levenshtein tables are almost identical,
+while the Wu-Palmer table contains several zeroes.
+To understand these results a bit better, we will a second display method: the best three matches, ranked by percentage,
+for each column name.
+
+\begin{verbatim}
+hiredate:
+	birthdate 70.59%, required_date 66.67%, store_id 37.5% [lcs]
+	birthdate 70.59%, required_date 66.67%, firstname 47.06% [levenshtein]
+	 0%,  0%,  0% [wordnet]
+
+phone_no:
+	phone 76.92%, projno 57.14%, order_id 37.5% [lcs]
+	phone 76.92%, projno 57.14%, order_id 37.5% [levenshtein]
+	 0%,  0%,  0% [wordnet]
+
+job:
+	projno 44.44%, majproj 40.0%, bonus 25.0% [lcs]
+	projno 44.44%, majproj 40.0%, bonus 25.0% [levenshtein]
+	position 93.33%, zip_code 63.16%, manager 63.16% [wordnet]
+
+position:
+	location 62.5%, projno 42.86%, deptname 37.5% [lcs]
+	location 62.5%, projno 42.86%, store_id 37.5% [levenshtein]
+	location 100.0%, job 93.33%, quantity 61.54% [wordnet]
+
+firstname:
+	first_name 94.74%, lastname 70.59%, deptname 58.82% [lcs]
+	first_name 94.74%, lastname 70.59%, deptname 58.82% [levenshtein]
+	 0%,  0%,  0% [wordnet]
+
+lastname:
+	last_name 94.12%, firstname 70.59%, category_name 57.14% [lcs]
+	last_name 94.12%, firstname 70.59%, category_name 57.14% [levenshtein]
+	 0%,  0%,  0% [wordnet]
+\end{verbatim}
+
+This is a fragment of the results displayed as the best three matches for each column name.
+Every row represents the results of one method used.
+Once again, we observe that LCS and Levenshtein results are very similar.
+In cases where they do differ, they seem to both miss the mark.
+For example, LCS matches \textit{hiredate} with \textit{store\_id} with a 37.5\% confidence, while Levenshtein matches
+\textit{hiredate} with \textit{firstname} with a 47.06\% confidence.
+Both pairs of column are most likely unrelated.
+However, when it comes to column names with slight variations in spelling, such as \textit{lastname} and \textit{last\_name},
+both LCS and Levenshtein produce correct matches with a 90\% or higher confidence.
+Wu-Palmer (wordnet) fails to match columns that are not correctly spelled words in the dictionary.
+On the other hand, Wu-Palmer can find matches that are essentially invisible to LCS and Levenshtein.
+For example, it matches \textit{position} with \textit{location} with a 100\% confidence, which is correct (both of these
+columns might contain physical locations), but it also matches \textit{position} with \textit{job} with a 93.33\% confidence,
+which is also a valid option (position might refer to an employee's function in a company).
+
+\subsubsection{Understanding the results}
+According to the Python documentation, the algorithm behind SequenceMatcher predates an algorithm published by Ratcliff
+and Obersheldp in the late 1980's under the hyperbolic name ``gestalt pattern matching''~\cite{difflib}.
+The idea is to find the longest contiguous matching subsequence, and then apply it recursively to the sequences to the
+left and right of the matching subsequence~\cite{difflib}.
+The \textit{ratio()} method return a float in the range [0, 1] with the formula 2.0 * M / T, where T is the total number
+of elements in both sequences and M is the number of matches~\cite{difflib}.
+The Levenshtein distance between two strings is the number of insertions, deletions, or substitutions required to transform
+one string into the other.
+A C extension module for Python implements the ratio of similarity between two strings as the complement of the normalized
+Levenshtein distance~\cite{Levenshtein}.
+Given these implementations of LCS and Levenshtein, it makes sense that the results obtained are very similar.
+Both methods look at how close two strings are character by character.
+Therefore, the best usage of these methods in column name matching is to combine them.
+Disagreements with a low confidence percentage can be ignored, but disagreements with a high confidence should be resolved
+by applying a different comparison method, such as Wu-Palmer.
+
+\bigbreak
+
+WordNet is an interface for Python's NLTK module.
+According to its documentation, WordNet structures words using synsets, which are, essentially, sets of synonyms that
+share a common meaning~\cite{wordnet}.
+Each synset contains one or more lemmas, which represent a specific sense of a specific word~\cite{wordnet}.
+The Wu-Palmer similarity is implemented as ``a score denoting how similar two word senses are, based on the depth of the
+two senses in the taxonomy and that of their Least Common Subsumer (most specific ancestor node)''~\cite{wordnet}.
+This explains why our Wu-Palmer test was able to match \textit{position} and \textit{location}, but also \textit{position}
+and \textit{job}, both with a very high confidence.
+The word ``position'' shares a synset with both ``location'' and ``job'', the first one meaning ``a place in the physical world'',
+and the second one ``a function in an organization''.
+This algorithm is, therefore, extremely useful for identifying columns with similar data, whose names are synonyms in the
+dictionary.
+The shortcomings of WordNet are visible when the words are spelled incorrectly.
+For example, the algorithm might correctly identify the words \textit{first} and \textit{name}, but not \textit{firstname},
+nor \textit{first\_name}, the last two being common occurrences in datasets.
+How can we resolve this problem?
+
+\subsubsection{Data types}
 The data types provide the least amount of information about the similarity of the two columns.
 We can check whether they share the same data type (numerical, strings, boolean), but this does not mean the contents
 are related.
