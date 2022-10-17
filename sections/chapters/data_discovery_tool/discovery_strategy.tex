@@ -64,9 +64,9 @@ first\_name, last\_name, phone, email, workdept, salary, deptnumb, manager, majp
 
 We ran three algorithms on all pairs of terms in this list:
 \begin{itemize}
-    \item Longest Continuous (Matching) Subsequence (LCS), as implemented by the Python \textit{difflib} library
-    \item The Levenshtein distance, as implemented by the Python \textit{Levenshtein} library
-    \item The Wu-Palmer Similarity, as implemented by the Python Natural Language Toolkit (NLTK)
+    \item Longest Continuous (Matching) Subsequence (LCS), as implemented by the Python \textit{difflib} library~\cite{difflib}
+    \item The Levenshtein distance, as implemented by the Python \textit{Levenshtein} library~\cite{Levenshtein}
+    \item The Wu-Palmer Similarity, as implemented by the Python Natural Language Toolkit (NLTK)~\cite{wordnet}
 \end{itemize}
 
 \bigbreak
@@ -75,7 +75,7 @@ We developed two different views of the results of these tests, to compare and c
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth, angle=270]{figures/names_lcs_levenshtein_wordnet_table}
+    \includegraphics[width=12cm]{figures/names_lcs_levenshtein_wordnet_table}
     \caption{Full results of LCS, Levenshtein, and Wu-Palmer on a list of column names}\label{fig:figure}
 \end{figure}
 
