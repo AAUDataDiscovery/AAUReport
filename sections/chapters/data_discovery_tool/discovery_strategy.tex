@@ -166,7 +166,13 @@ dictionary.
 The shortcomings of WordNet are visible when the words are spelled incorrectly.
 For example, the algorithm might correctly identify the words \textit{first} and \textit{name}, but not \textit{firstname},
 nor \textit{first\_name}, the last two being common occurrences in datasets.
-How can we resolve this problem?
+A possible solution is the use of tokenization (splitting a string into words).
+However, attempts to use this approach did not show an improvement of results.
+That is because many of the common column names selected in the test (such as \textit{firstname} and \textit{majproj}) cannot
+be tokenized.
+Additionally, WordNet does not work well with phrases.
+Its synsets are built with singular words, therefore it cannot grasp the meaning obtained when combining words such as
+\textit{phone} and \textit{number}.
 
 \subsubsection{Data types}
 The data types provide the least amount of information about the similarity of the two columns.
@@ -182,9 +188,36 @@ If we are dealing with categorical data, there might be value in comparing the s
 Continuous, numerical data can be compared using mathematical formulas, such as the Pearson correlation coefficient.
 \todo{Add reference}
 \todo{Show results}
-Another useful metric we can compute is the p-value.
-\todo{Add reference}
-\todo{Show results}
+
+\subsubsection{Stationarity}
+A stationary process is ``a stochastic process whose unconditional joint probability distribution does not change when shifted
+in time''~\cite{Gagniuc2017}.
+In other words, it is ``a flat looking series, without trend, constant variance over time, a constant autocorrelation structure
+over time and no periodic fluctuations''~\cite{EngineeringStatisticsHandbook}.
+Determining whether our continuous data is stationary or not could be the first step towards trend analysis and prediction.
+Stationarity can by itself be an indication of similarity (for example, temperature measurements taken at the same place
+in the same season should be stationary), but it should be combined with other kinds of analysis for higher accuracy.
+One method of determining stationarity is the Augmented Dickey-Fuller Test (ADF).
+ADF tests the null hypothesis that a unit root is present in a time-series sample~\cite{Greene1997}.
+If a unit root is present in a stochastic process, then that process is non-stationary, but it does not necessarily have a trend.
+Therefore, the alternate hypothesis of the ADF test is that the series is stationary.
+ADF uses the p-value to accept or reject the null hypothesis, but it also produces a secondary value, called the ADF statistic.
+The more negative this number is, the stronger the confidence in rejecting the null hypothesis~\cite{Greene1997}.
+
+\bigbreak
+
+The Python library \textit{statsmodels} contains an implementation of ADF~\cite{statsmodels}, which we applied to data produced
+by our generator.
+Our test dataframes are composed of two columns and one hundred rows.
+The first column is an index, and will always have values from 0 to 99.
+Running ADF on this series produces an ADF statistic of approximately 2.46 and a p-value of 0.99.
+This is extremely strong evidence for accepting the null hypothesis that this series is non-stationary, which must be true
+for a linear, incremental process.
+The second column will always contain continuous data following a sine wave.
+All tests on this column produced small ADF statistic values, around -5000000000000.
+The p-value was shown as 0.0, indicating that it was a positive number very close to 0.
+This evidence points towards confidently rejecting the null-hypothesis that the series has a root value and claiming that
+a sine wave is stationary, which, once again, is true.
 
 \bigbreak
 
