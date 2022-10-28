@@ -221,5 +221,41 @@ a sine wave is stationary, which, once again, is true.
 
 \bigbreak
 
+\subsubsection{Dynamic Time Warping}
+Determining stationarity for a data series is useful, but, going further, we would also like to know if two series follow
+the same pattern or trend.
+For example, if two datasets measure the same parameter over a time period (say, temperature), but use different units of
+measurement, they will show the same trend, and we would like to catalogue them under the same category, or even merge them.
+One way to achieve this is dynamic time warping (DTW).
+In the paper ``Dynamic Time Warping Algorithm Review'', Pavel Senin explains that the algorithm builds a distance matrix
+between all points in the first series and all points in the second series.
+Then, the algorithm finds the ``alignment path which runs through the low-cost areas of the cost matrix''~\cite{DTWAlgorithmReview},
+and associates a cost function to it.
+The path with the lowest cost associated with alignment will be the optimal path~\cite{DTWAlgorithmReview}.
+The alignment path must satisfy a number of conditions, which, in short, ensure that warping the first time series to the second one
+preserved the chronological ordering of the points.
+The result of this algorithm is the minimal cost incurred by transforming one series to make it identical to the other.
+The smaller this cost, the higher the similarity of the two series.
+To calculate this similarity percentage, we compute an auxiliary value MAX\_DIST, equal to the length of the first series
+times its maximum value, guaranteed to be larger than the biggest obtainable distance.
+Then, the similarity percentage will be (MAX\_DIST - distance) / MAX\_DIST * 100.
+We want to keep MAX\_DIST close to the real distance values, because using an abnormally high boundary wil produce percentages
+that accumulate towards 100\% and will make interpreting the results more difficult.
+One limitation of DTW is that the data points in both series must be sampled at equidistant points in time.
+Another one is its time complexity.
+DTW runs in O(N*M), where N and M are the sizes of the two series.
+Therefore, if we are dealing with large data sets, we can only apply DTW on small chunks of them.
+
+\bigbreak
+
+We ran the DTW algorithm on some data sets produced by our generator, with two kinds of continuous data: indexes (linear and
+incremental) and sine waves.
+Comparing two distinct sine waves yielded similarity scores of 95\% and above, while comparing an index with a sine wave produced
+an average similarity of 50\%.
+This gives a clear indication of whether two data series should be considered similar or not and will help us set a confidence
+threshold when applying DTW in combination with other methods.
+Additionally, we observed that the algorithm's runtime increases significantly (from a few seconds to a few minutes) when
+changing the size of the data series from 1000 points to 10000.
+
 Given the varying significance of these results, adding weights to the final computation is crucial.
 \todo{How?}
