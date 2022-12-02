@@ -284,6 +284,45 @@ dataframes~\cite{pandasCorr}.
             return pearson_correlation_coefficient
 \end{minted}
 
+The two-sample t-test is another method of comparing two numerical, continuous columns.
+The two-sample t-test is used to determine whether the unknown population means of two groups are equal or not~\cite{twoSampleTTest}.
+When performing this test, we propose the null hypothesis that the unknown population means of the two series are equal.
+This should give a good indication of strong similarity or correlation between them.
+If the resulting p-value is smaller than 5\% (a common threshold value), we can safely reject the null hypothesis and claim
+that the means are different.
+There are a number of preconditions that the data needs to meet in order for the two-sample t-test to be valid (the sample
+sets must be independent, obtained randomly, and continuous~\cite{twoSampleTTest}), therefore we should use this method
+carefully in our data matcher.
+The calculations involved in the test also differ when the two sample sets have equal variances or not.
+For the Python implementation, we will use the method \textit{ttest\_ind()} in the \textit{scipy} library~\cite{scipyTwoSampleTTestInd}.
+This method takes te equality of the two series' variances as a parameter, so the following code snippet calculates them
+before performing the test.
+
+\begin{minted}{python}
+    class MatchDataTwoSampleTTest(DataMatcher):
+        @staticmethod
+        def run_process(series1, series2, **kwargs):
+            # Normalize the data
+            series1 = series1 / np.max(np.abs(series1), axis=0)
+            series2 = series2 / np.max(np.abs(series2), axis=0)
+
+            # First, we determine if the 2 groups have the same variance
+            # A ratio of less than 4:1 indicates we should consider the variances equal
+            variance_a = np.var(series1)
+            variance_b = np.var(series2)
+            if min(variance_a, variance_b) == 0:
+                equal_variances = max(variance_a, variance_b) < 4
+            else:
+                equal_variances = (max(variance_a, variance_b) / min(variance_a, variance_b)) < 4
+
+            # Perform the two sample T-test
+            result_statistic, result_p_value = stats.ttest_ind(series1, series2, equal_var=equal_variances)
+
+            # If the p-value is greater than 0.05, we accept the null hypothesis that the mean of the two groups is equal
+            # Otherwise, we reject it, and claim that the means are different
+            return result_p_value
+\end{minted}
+
 \subsubsection{Stationarity}
 A stationary process is ``a stochastic process whose unconditional joint probability distribution does not change when shifted
 in time''~\cite{Gagniuc2017}.
