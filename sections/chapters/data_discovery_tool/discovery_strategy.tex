@@ -192,15 +192,6 @@ First, we compare the data types of the two columns.
 This operation is fast, as we are only using the information provided by Pandas about the dataframe~\cite{pandasDtypes}.
 Furthermore, if we include the data types of the columns in the metadata, we will not need access to the dataframe at
 all for this step.
-The following code snippet exemplifies a metadata column class with data type as an attribute:
-
-\begin{minted}{python}
-    class ColMetadata(ABC):
-        name: str
-        col_type: str
-        columns: any  # [ColMetadata]
-        relationships: [Relationship]
-\end{minted}
 
 The next few data analysis methods will dive into the content of the dataframes, thus increasing the time and space
 complexity of executing them.
@@ -210,51 +201,20 @@ For example, a column of string may actually hide numbers that have been erroneo
 Pandas provides a useful method for determining which strings in a series can be parsed as numbers, namely
 \textit{to\_numeric}~\cite{pandasToNumeric}.
 
-\begin{minted}{python}
-    def numerify_column(series):
-        """
-        Transform all values in a column to a numeric data type.
-        Values that can't be transformed will be removed
-        :param series:
-        :return:
-        """
-        return pandas.to_numeric(series, 'coerce').dropna()
-\end{minted}
-
 The \textit{coerce} parameter will set all non-numeric values to NaN, and the \textit{dropna()} method will remove them.
 This function can also be used to determine the percentage of numerical values in a series and roughly equal
 percentages of numerical values in two different columns can be an indicator of similarity.
 We also want to determine what percentage of the entries in a series are unique.
-We call this the \textit{continuity} factor and can calculate it with a simple formula.
-
-\begin{minted}{python}
-    def column_is_continuous_probability(series):
-        """
-        Checks if the data in a column is continuous or categorical
-        :param series:
-        :return:
-        """
-        return series.nunique() / series.count()
-\end{minted}
+We call this the \textit{continuity} factor and can calculate it with a simple formula: the number of unique values in the
+column divide by the total number of rows.
 
 Columns that produce a low value (below 0.5) here can be treated as categorical and two categorical columns can be
 compared by looking at the unique values in each.
 In particular, we want to compare the sizes of the intersection of the two series and their union.
 We use NumPy's implementation of these two sets: \textit{intersect1d}~\cite{numpyIntersect1d} and
 \textit{union1d}~\cite{numpyUnion1d}.
-
-\begin{minted}{python}
-    class MatchIdenticalRows(DataMatcher):
-        @staticmethod
-        def run_process(series1, series2, **kwargs):
-            stringified_column_a = series1.apply(str)
-            stringified_column_b = series2.apply(str)
-
-            categorical_similarity = len(numpy.intersect1d(stringified_column_a,
-                stringified_column_b)) / len(
-                numpy.union1d(stringified_column_a, stringified_column_b)) * 100
-            return categorical_similarity
-\end{minted}
+It is a good idea to transform all values in the columns into strings before performing the test, to avoid any type errors.
+Then, the similarity value will be the length of the intersection divided by the length of the union.
 
 On the other hand, numerical columns with a high continuity factor can be compared using the Pearson correlation
 coefficient.
@@ -276,14 +236,6 @@ correlation in such a situation, which is what we are interested in.
 Pandas has a convenient \textit{corr()} method for computing the Pearson correlation coefficient between two series or
 dataframes~\cite{pandasCorr}.
 
-\begin{minted}{python}
-    class MatchDataPearsonCoefficient(DataMatcher):
-        @staticmethod
-        def run_process(series1, series2, **kwargs):
-            pearson_correlation_coefficient = abs(series1.corr(series2)) * 100
-            return pearson_correlation_coefficient
-\end{minted}
-
 The two-sample t-test is another method of comparing two numerical, continuous columns.
 The two-sample t-test is used to determine whether the unknown population means of two groups are equal or not~\cite{twoSampleTTest}.
 When performing this test, we propose the null hypothesis that the unknown population means of the two series are equal.
@@ -295,33 +247,8 @@ sets must be independent, obtained randomly, and continuous~\cite{twoSampleTTest
 carefully in our data matcher.
 The calculations involved in the test also differ when the two sample sets have equal variances or not.
 For the Python implementation, we will use the method \textit{ttest\_ind()} in the \textit{scipy} library~\cite{scipyTwoSampleTTestInd}.
-This method takes te equality of the two series' variances as a parameter, so the following code snippet calculates them
-before performing the test.
-
-\begin{minted}{python}
-    class MatchDataTwoSampleTTest(DataMatcher):
-        @staticmethod
-        def run_process(series1, series2, **kwargs):
-            # Normalize the data
-            series1 = series1 / np.max(np.abs(series1), axis=0)
-            series2 = series2 / np.max(np.abs(series2), axis=0)
-
-            # First, we determine if the 2 groups have the same variance
-            # A ratio of less than 4:1 indicates we should consider the variances equal
-            variance_a = np.var(series1)
-            variance_b = np.var(series2)
-            if min(variance_a, variance_b) == 0:
-                equal_variances = max(variance_a, variance_b) < 4
-            else:
-                equal_variances = (max(variance_a, variance_b) / min(variance_a, variance_b)) < 4
-
-            # Perform the two sample T-test
-            result_statistic, result_p_value = stats.ttest_ind(series1, series2, equal_var=equal_variances)
-
-            # If the p-value is greater than 0.05, we accept the null hypothesis that the mean of the two groups is equal
-            # Otherwise, we reject it, and claim that the means are different
-            return result_p_value
-\end{minted}
+We must first determine the equality of the variances of the two series and pass it to \textit{ttest\_ind()} as a parameter.
+Then, running this method will give us the p-value we require.
 
 \subsubsection{Stationarity}
 A stationary process is ``a stochastic process whose unconditional joint probability distribution does not change when shifted
