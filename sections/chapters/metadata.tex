@@ -1,0 +1,33 @@
+\section{Metadata}
+\subsection{The Necessity for Formalized Persistence}
+
+Having the results available from the Data Discovery tool only during runtime is severely limiting.
+Therefore, the output of the library must be persisted for later analysis.
+Moreover, a standardized
+metadata format is useful for data representation during runtime.
+\newline
+
+A practical solution must adhere to several criteria, namely:
+\begin{enumerate}
+    \item It must use a pre-existing format.
+    \item Low overhead.
+    \item Minimal number of dependencies.
+    \item Human readable.
+\end{enumerate}
+
+The requirement for the pre-existing format is an obvious one.
+By using standardized formats such as XML we eliminate the need for custom tools to read the
+data generated.
+
+The second point is regarding performance considerations, generating and persisting the metadata must be
+with as little disruption as possible, especially considering that IO resources may be limited as the
+analysis is running.
+
+The third condition is again concerned with portability.
+Ideally, the users of the library shouldn't be
+forced to install any specialized applications just to read the metadata.
+Enforcing this point also reduces the complexity of the data discovery tool
+
+
+The last requirement, while not the most significant, enables the users to quickly understand the
+state of the system, without having to rely on any helper tools.
