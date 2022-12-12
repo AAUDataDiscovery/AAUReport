@@ -1,10 +1,10 @@
 \section{Metadata}
 \subsection{The Necessity for Formalized Persistence}
 
-Having the results available from the Data Discovery tool only during runtime is severely limiting.
+Having the results available from the Data Discovery tool, only during runtime is severely limiting.
 Therefore, the output of the library must be persisted for later analysis.
 Moreover, a standardized
-metadata format is useful for data representation during runtime.
+metadata format is useful for data representation during runtime for other ad-hoc use cases.
 \newline
 
 A practical solution must adhere to several criteria, namely:
@@ -12,6 +12,7 @@ A practical solution must adhere to several criteria, namely:
     \item It must use a pre-existing format.
     \item Low overhead.
     \item Minimal number of dependencies.
+    \item Enforceable data contract.
     \item Human readable.
 \end{enumerate}
 
@@ -28,6 +29,99 @@ Ideally, the users of the library shouldn't be
 forced to install any specialized applications just to read the metadata.
 Enforcing this point also reduces the complexity of the data discovery tool
 
+Having a data contract allows the users to trust that the metadata follows certain constraints.
+Therefore, the tools dependent on the data discovery library can rely on the metadata, and may generate their own,
+to be fed back.
 
 The last requirement, while not the most significant, enables the users to quickly understand the
 state of the system, without having to rely on any helper tools.
+
+\subsection{Representation Candidates}
+
+Several options for metadata representation were considered, and each of them was evaluated by the above-detailed criteria.
+
+\begin{enumerate}
+    \item SQLite Database.
+    \item Centralized metadata file(s).
+    \item Individual metadata file for each analysed file.
+\end{enumerate}
+
+\textbf{Database approach:}
+Initially, a local SQLite database was considered.
+This option had many benefits, such as implicitly enforced data-contracts
+in the form of the database schema.
+Portability was also a benefit, as SQLite databases are encapsulated in a single file.
+
+Performance would have been questionable, because on one hand DBMSes are optimized for multiple concurrent access,
+but on the other hand, they inevitably introduce some overhead over simple file operations.
+
+The main reason why this option was ultimately dropped is that it would force the user to install software that
+can access the generated databases.
+Also, any other software that may want to consume the data generated will have to have an SQLite driver.
+
+\textbf{Simple, file based approaches:}
+Alternatively, the data discovery instance can simply write its results
+to the disc, alongside the analysed data.
+The output format will ideally follow some established standard such as XML
+or JSON.
+
+Of those two, the latter was picked due to its smaller overall footprint.
+While XML has some great accompanying standards,
+those are not particularly useful for simple data transfer.
+The only necessary component is a way to validate the data.
+
+Fortunately JSON schema is a well established option, and is suitable for the project's needs.
+
+The only remaining decision left, was whether to have a centralized file, either on a project or on a folder level,
+or to generate individual JSON files for each analysed file.
+
+Having centralized files has the benefit of reduced footprint, and by extension -
+better portability.
+
+However, reading and writing into the same file throughout the discovery run is inefficient, and
+needlessly complex, purely from a programmer's point of view.
+
+This approach also fails from a readability standpoint, if we consider situations where the user
+may only want to look at results from a particular file.
+
+\subsection{Implementation}
+
+Having decided on an approach, the next step was to introduce the metadata generation into the library.
+Internally, the proper metadata structure is enforced by classes.
+
+After the analysis completes, the results are written inOto the same folder as the subject file.
+The generated file's name has the format of \textit{name-of-the-subject-file.metadata.json}
+
+An excerpt from a generated JSON file is as follows:
+
+\newline
+
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+  "file_path": "/mock_filesystem/new_test_0.csv",
+  "extension": "csv",
+  "size": {
+    "quantity": 1336720,
+    "unit": "byte"
+  },
+  "hash": -7102791497049667481,
+  "no_of_rows": 5000,
+  "tags": [],
+  "columns": [
+    {
+      "name": "Unnamed: 0",
+      "is_numeric_percentage": 0.0,
+      "continuity": 1.0,
+      "mean": null,
+      "minimum": "2016-01-01 00:00",
+      "maximum": "2016-07-27 07:00",
+      "stationarity": 0,
+      "relationships": [
+        {
+          "certainty": 100,
+          "target_file_hash": "1464446627197681099",
+          "target_column_name": "Unnamed: 0"
+        }
+      ]
+    },
+\end{lstlisting}
