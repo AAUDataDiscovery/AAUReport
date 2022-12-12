@@ -7,12 +7,13 @@ Moreover, a standardized
 metadata format is useful for data representation during runtime for other ad-hoc use cases.
 \newline
 
-A practical solution must adhere to several criteria, namely:
+A practical solution must adhere to several criteria.
+Namely:
 \begin{enumerate}
     \item It must use a pre-existing format.
     \item Low overhead.
     \item Minimal number of dependencies.
-    \item Enforceable data contract.
+    \item Enforceable data-contract.
     \item Human readable.
 \end{enumerate}
 
@@ -20,16 +21,16 @@ The requirement for the pre-existing format is an obvious one.
 By using standardized formats such as XML we eliminate the need for custom tools to read the
 data generated.
 
-The second point is regarding performance considerations, generating and persisting the metadata must be
+The second point is due to performance considerations. Generating and persisting the metadata must be
 with as little disruption as possible, especially considering that IO resources may be limited as the
 analysis is running.
 
-The third condition is again concerned with portability.
+The third condition is concerned with portability.
 Ideally, the users of the library shouldn't be
 forced to install any specialized applications just to read the metadata.
-Enforcing this point also reduces the complexity of the data discovery tool
+Enforcing this point also reduces the complexity of the Data Discovery tool
 
-Having a data contract allows the users to trust that the metadata follows certain constraints.
+Having a data-contract allows the users to trust that the metadata follows certain constraints.
 Therefore, the tools dependent on the data discovery library can rely on the metadata, and may generate their own,
 to be fed back.
 
@@ -55,7 +56,7 @@ Portability was also a benefit, as SQLite databases are encapsulated in a single
 Performance would have been questionable, because on one hand DBMSes are optimized for multiple concurrent access,
 but on the other hand, they inevitably introduce some overhead over simple file operations.
 
-The main reason why this option was ultimately dropped is that it would force the user to install software that
+The main reason why this option was ultimately dropped, is that it would force the user to install software that
 can access the generated databases.
 Also, any other software that may want to consume the data generated will have to have an SQLite driver.
 
@@ -89,13 +90,31 @@ may only want to look at results from a particular file.
 Having decided on an approach, the next step was to introduce the metadata generation into the library.
 Internally, the proper metadata structure is enforced by classes.
 
-After the analysis completes, the results are written inOto the same folder as the subject file.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=6cm]{figures/metadata/metadata_class}
+    \caption{Diagram for the class metadata}
+    \label{fig:metadata_fig_1}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{figures/metadata/col_rel_class}
+    \caption{Diagram for the column and relationship classes}
+    \label{fig:metadata_fig_2}
+\end{figure}
+
+The exact structure of these classes is as shown on figure ~\ref{fig:metadata_fig_1} and on figure ~\ref{fig:metadata_fig_2}.
+
+After the analysis completes, the results are written into the same folder as the subject file.
 The generated file's name has the format of \textit{name-of-the-subject-file.metadata.json}
 
-An excerpt from a generated JSON file is as follows:
-
+\newline
 \newline
 
+An excerpt from a generated JSON file is as follows:
 \begin{lstlisting}[language=json,firstnumber=1]
 {
   "file_path": "/mock_filesystem/new_test_0.csv",
@@ -125,3 +144,91 @@ An excerpt from a generated JSON file is as follows:
       ]
     },
 \end{lstlisting}
+
+A notable difference between the generated JSON files and the metadata classes is the
+omission of the differentiation between categorical and numerical colum types.
+
+This is due to a late realization, that often values that are not numerical may still have
+\("\)numeric like\("\) values such as minimum and maximum. (e.g.\ dates), and those
+were implicitly handled by the tools that implementation relies on.
+
+\subsection{Data-Contract}
+As detailed above, it is not enough to just make the metadata available for the users.
+Its structure must adhere to a certain set of promises so that its consumers can reliably consume them.
+
+The same principle must also be held up the other way around.
+It's easy to reason that in the future third party plugins may be allowed to be part of
+the library, in such situation, the library must ensure that the metadata it receives are valid.
+
+Since it's already been established that the project will use JSON as its metadata format,
+writing the data-contract in the form of a JSON schema standard ~\cite{jsonschema} was an obvious choice.
+
+It's a simple format, also written in JSON. Moreover, due to its structure, it's human-readable, and self-explanatory.
+
+Below is an excerpt from the JSON schema as implemented (full version is available in the appendix)
+\begin{lstlisting}[language=json,firstnumber=1]
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+    "file_path": {
+      "type": "string"
+    },
+    "extension": { "enum": ["json", "csv", "parquet"] },
+    "size": {
+      "type": "object",
+      "properties": {
+        "quantity": {
+          "type": "integer"
+        },
+        "unit": { "enum": ["byte", "kilobyte", "megabyte", "gigabyte"] }
+      },
+      "required": [
+        "quantity",
+        "unit"
+      ]
+\end{lstlisting}
+\ldots
+\begin{lstlisting}[language=json,firstnumber=1]
+"relationships": {
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "certainty": {
+          "type": "number",
+          "min": 0,
+          "max": 100
+        },
+        "target_file_hash": {
+          "type": "string"
+        },
+        "target_column_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "certainty",
+        "target_file_hash",
+        "target_column_name"
+      ]
+    }
+  ]
+}
+\end{lstlisting}
+
+It's worth noting that this schema allows the use of custom JSON fields.
+Therefore, it only enforces the inclusion of mandatory fields and the correct form of optional,
+but handled fields.
+
+Third party tools are able to add their custom data to the metadata files without making them invalid.
+Naturally, in those cases the discovery library doesn't make any promises
+about the proper handling of the custom fields.
+
+In the concrete implementation, whenever a metadata file gets read, or written, the
+subject string must, first pass through a validation layer before it's allowed to be consumed
+or saved.
+
+This behaviour also has the benefit of acting as an implicit test to ensure that library is working
+as intended.
