@@ -10,7 +10,7 @@ to build data in the shape that we choose to test, this is beneficial for:
 
 Concerns regarding random data accurately modelling real life data will be addressed at the end of this section.
 
-\subsection{Implementation (iteration 1)}
+\subsection{Implementation (iteration 1)}\label{subsec:implementation-(iteration-1)}
 For our first draft of the implementation, we have kept the feature list simple.
 
 \begin{figure}[h]
@@ -28,7 +28,7 @@ Column names are generated using random words, and the index column can be defin
 
 - datetime: Starting at 2016, each row in the index is a datetime that increments by 1 day
 
-- categoric: Each index is a generated UUID
+- categorical: Each index is a generated UUID
 
 For numeric data, we chose to start off by modeling a sin wave with slight variance, which would easy to calculate, and
 would resemble simple repeating trends
@@ -51,3 +51,39 @@ In future iterations it may be beneficial to put more effort into preventing the
 and introducing a multithreaded approach to building larger dataframes.
 There is also a slight issue that creating a large spread of files will still start by building a single dataframe, which
 may cause memory issues for larger sets of smaller data (this can be avoided by building each file individually).
+
+\subsection{Implementation (iteration 2)}\label{subsec:implementation-(iteration-2)}
+
+In this iteration we approach the issues mentioned in the last section.
+
+We start by abstracting the concept of a column into its own class, which allows us to build an arbitrary dataframe
+based on the specified columns.
+
+Our next change is to transform columns into infinite data generators, when generating large datasets, we can specify
+a chunk size, and write to files without holding data in memory.
+
+Now that columns are abstracted, we can approach each type of data column we would like to emulate individually:
+
+\subsubsection{Linear}
+
+The most simple type of numerical data, returns a series that can be plotted as y=x
+
+
+\subsubsection{SinWave}
+
+Similar to the sin wave implemented in the first iteration, we count upwards and apply the sin function to the number.
+In the future it may be worth resetting the counter occasionally, which will prevent the counter from becoming too large
+and using more memory.
+
+We provide additional options that allow more varied data sets:
+
+- \textbf{variance}: The variance of plot points on the y-axis
+
+- \textbf{phase variance}: The variance of plot points on the x-axis
+
+- \textbf{noise}: Generate a random number to modify each plot point
+
+
+\subsubsection{Random Word}
+
+Generate a random word using the faker library
