@@ -62,8 +62,8 @@ space complexity of such an endeavor is quadratic on the total number of columns
 The solution is to identify dataframes of interest where we temporarily extend the metadata with column relationships.
 Use cases where we exemplify these techniques will be present in the following chapter.
 
-One final component that we need to utilize this library is an interface that can receive all relevant parameters and run
-one of the matching methods in the library.
+One final component that we need in order to utilize this library is an interface that can receive all relevant parameters
+and run one of the matching methods in the library.
 The list of parameters must include the name of the method that should be called, the metadata information of the two columns
 that we are trying to match (if the method performs computation on two columns), the columns themselves (if the method needs
 to access the data rows), and the metadata information of the two dataframes to which the columns belong.
