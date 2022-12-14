@@ -1,0 +1,39 @@
+As a final example in this section, we will explore a theoretical scenario which highlights the strengths and utilities of
+our data catalog system: ubiquitous crowdsourcing.
+
+Ubiquitous crowdsourcing can be defined as ``crowdsourcing of tasks beyond the desktop''~\cite{ubiquitousCrowdsourcing},
+making use of mobile devices (such as smartphones) and ubiquitous technology (such as public displays, feedback consoles,
+sensors) to collect results from the target groups.
+These results are then processed and compiled into a report, which usually advances research or development of a product.
+How can our data discovery tool help in this situation?
+
+One of the biggest challenges with ubiquitous crowdsourcing is the potentially vast diversity of results, especially for large,
+distributed projects across a massive geographical area.
+Sometimes results are colected in different formats, data might be corrupted, and, in case of collaborative work between
+institutions, those responsible for collection and central processing may not be aware of the particularities of each surveying
+unit.
+For example, the same information might be present in dataframes from different locations where collection of data was performed.
+but with varying column names, which must be unified before being analysed.
+There is also plenty of metadata that can be extracted in a ubiquitous crowdsourcing scenario, such as the timestamp of a
+response, the location, the number of invalid results (if any filtering is performed), aggregates on respondent profiles and
+on categorical data (if the questions provide multiple choice answers).
+Our tool is capable of organizing all this metadata and then using it in discovery algorithms.
+
+The best column match identifier can provide useful insights on standard columns (such as location) that have different names
+or formats, with the purpose of merging tables into a final coherent result.
+Automatic tagging can help in situations where contextual information is missing, or if the researchers are unsure how to classify
+a set of responses against previously established categories.
+Finally, we can use algorithms which analyse continuous, numerical series, such as Dynamic Time Warping or the Two-Sample t-Test
+to observe similarities and discrepancies between survey periods and answer questions such as:
+
+\begin{itemize}
+    \item Does the time of day impact the quantity or quality of results?
+    \item Does the location impact the quantity of results at specific points in time?
+    \item Does a high volume of results in a short period of time impact their validity?
+\end{itemize}
+
+All of these questions can be answered by looking at graphs where results have been plotted, but it is still valuable to
+obtain an insight into the expected answers before plotting the values.
+This can save time by only considering results that are statistically significant and by plotting them intelligently, not
+just randomly or in bulk.
+In essence, we are performing triage and pre-processing, which is the main purpose and scope of our tool.
