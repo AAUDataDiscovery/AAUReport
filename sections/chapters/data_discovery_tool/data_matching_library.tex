@@ -1,47 +1,47 @@
 The algorithms from the previous section were compiled into a library for data matching and exploration.
 There are several reasons for this design choice, which become obvious when we look at the alternative.
-Another possibility would have been to create services that process one or more dataframes with all the available methods
+Another possibility would have been to create services that process one or more dataframes with all the available functions
 and return the result.
 However, a library is much more flexible.
 
-First of all, by storing methods in a library and calling them from the matcher service, we offer the user the option to
-only select the relevant methods for the task at hand.
-This is important because, while we can determine when a method is technically inapplicable (for example, two-sample T-test
+First of all, by storing functions in a library and calling them from the matcher service, we offer the user the option to
+only select the relevant functions for the task at hand.
+This is important because, while we can determine when a function is technically inapplicable (for example, two-sample T-test
 only works on continuous, numerical series), there are many ambiguous scenarios where trying out different combinations of
-methods on the same dataframes can provide noteworthy results.
+functions on the same dataframes can provide noteworthy results.
 
 Second of all, it is a question of performance.
-The following is one layer of the structure of our data matching library, showcasing different types of methods based on
-how they interact with the data.
+Fig~\ref{fig:data_matching_library_function_types} is one layer of the structure of our data matching library, showcasing
+different types of functions based on how they interact with the data.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=12cm]{figures/data_matching_library/data_matching_library}
-    \caption{Data matching library method types}
-    \label{fig:data_mathicng_library_doc_1}
+    \caption{Data matching library function types}
+    \label{fig:data_matching_library_function_types}
 \end{figure}
 
 This is just one possible classification, but it is useful for identifying performance differences and deciding how to
 handle results.
-The first method type (red) is applied on the dataframe and generates results which should be included in the metadata.
-These are metadata builder methods such as the Augmented Dickey-Fuller Test for stationarity, the formula for calculating
+The first function type (red) is applied on the dataframe and generates results which should be included in the metadata.
+These are metadata builder functions such as the Augmented Dickey-Fuller Test for stationarity, the formula for calculating
 the percentage of numerical values in a column, and the formula for calculating the continuity factor of a column.
 These results are expensive to calculate and, therefore, should be included in the metadata, as they will be used in further
 exploration and matching algorithms.
 
-The second method type (green) uses the metadata of two dataframes to generate similarity or correlation estimates.
-These methods help create a network of data structures and reveal information about seemingly unrelated pieces of data.
+The second function type (green) uses the metadata of two dataframes to generate similarity or correlation estimates.
+These functions help create a network of data structures and reveal information about seemingly unrelated pieces of data.
 They are computationally efficient, because they only use metadata, without accessing the dataframe rows, so, at least
 in theory, we could compute these results as often as we need them.
 However, it is still useful to store some of them in the metadata, for example, similarity percentages between the columns
 of two particularly related dataframes, as they may be displayed to the user in different formats or sent for further processing.
-Examples of methods of type two include all name matching methods, comparisons of column aggregates (such as minimum, maximum,
-and mean values), and comparisons of the results of type one methods (continuity, numerical percentage and stationarity).
+Examples of functions of type two include all name matching functions, comparisons of column aggregates (such as minimum, maximum,
+and mean values), and comparisons of the results of type one functions (continuity, numerical percentage and stationarity).
 
-Finally, the third method type (blue) uses the actual rows of a dataframe to generate similarity estimates.
+Finally, the third function type (blue) uses the actual rows of a dataframe to generate similarity estimates.
 These results are expensive to compute, and therefore should be stored in the metadata and reused from there instead of
 calculated from scratch whenever possible.
-Methods of type three include matching identical rows, calculating the Pearson coefficient, performing the two-sample t-test,
+Functions of type three include matching identical rows, calculating the Pearson coefficient, performing the two-sample t-test,
 and the Dynamic Time Warping algorithm.
 
 The question that remains is how to store matching results in the metadata.
@@ -63,9 +63,9 @@ The solution is to identify dataframes of interest where we temporarily extend t
 Use cases where we exemplify these techniques will be present in the following chapter.
 
 One final component that we need in order to utilize this library is an interface that can receive all relevant parameters
-and run one of the matching methods in the library.
-The list of parameters must include the name of the method that should be called, the metadata information of the two columns
-that we are trying to match (if the method performs computation on two columns), the columns themselves (if the method needs
+and run one of the matching functions in the library.
+The list of parameters must include the name of the function that should be called, the metadata information of the two columns
+that we are trying to match (if the function performs computation on two columns), the columns themselves (if the function needs
 to access the data rows), and the metadata information of the two dataframes to which the columns belong.
 The last parameter is relevant because storing a column relationship in a metadata file requires some kind of identifier for
 the second column beyond its name.
