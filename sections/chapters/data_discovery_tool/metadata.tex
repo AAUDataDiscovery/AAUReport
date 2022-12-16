@@ -1,7 +1,3 @@
-\section{Metadata}
-
-\subsection{The Necessity for Formalized Persistence}
-
 Having the results available from the Data Discovery tool, only during runtime is severely limiting.
 Therefore, the output of the library must be persisted for later analysis.
 Moreover, a standardized
@@ -22,7 +18,8 @@ The requirement for the pre-existing format is an obvious one.
 By using standardized formats such as XML we eliminate the need for custom tools to read the
 data generated.
 
-The second point is due to performance considerations. Generating and persisting the metadata must be
+The second point is due to performance considerations.
+Generating and persisting the metadata must be
 with as little disruption as possible, especially considering that IO resources may be limited as the
 analysis is running.
 
@@ -91,7 +88,7 @@ may only want to look at results from a particular file.
 Having decided on an approach, the next step was to introduce the metadata generation into the library.
 Internally, the proper metadata structure is enforced by classes.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=6cm]{figures/metadata/metadata_class}
     \caption{Diagram for the class metadata}
@@ -100,7 +97,7 @@ Internally, the proper metadata structure is enforced by classes.
 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/metadata/col_rel_class}
     \caption{Diagram for the column and relationship classes}
@@ -242,7 +239,7 @@ Similarly, a generalisation to the data represented in the columns will allow fo
 they represent.
 
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/metadata/metadata_v2}
     \caption{Diagram for the full metadata layout of a single metadata item}

@@ -1,5 +1,3 @@
-\section{Checksum Calculation}
-
 In order to uniquely identify the files analyzed, and detect changes across runs, the Data Discovery Library must
 perform some calculations on each file to generate a unique ID that is dependent on the content of the file.
 Ideally these calculations are efficient and the generated IDs will have a low collision rate.
@@ -38,7 +36,7 @@ Essentially, if there are 77163 files, by using a 32-bit checksum, the odds of a
 
 Therefore, there must be a careful balance between performance and coliision rates.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/checksum/collisions}
     \caption{Chances of collision for various bit sizes, source: ~\cite{PreshingCollisions}}
@@ -95,7 +93,7 @@ Each of them iterate over a list of file paths, following these steps:
     \item Go to step 3.
 \end{enumerate}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bchart}[step=50,max=350, unit=s]
         \bcbar[label=Python]{326}
@@ -122,7 +120,7 @@ This project investigated three different algorithms (although there are many av
 Namely:
 CRC32, Adler32 and Fletcher16.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bchart}[step=50,max=400, unit=s]
         \bcbar[label=CRC32]{307}
@@ -158,7 +156,7 @@ First, the distribution of the jobs from a single source list.
 This is a common pattern, and there are many readily available solutions.
 In this specific instance, Rayon  ~\cite{Rayon} - a popular data-parallelism package was used.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/checksum/simple_multi_crc}
     \caption{Sequence diagram for a parallelized checksum function.}
@@ -177,7 +175,7 @@ The order, in which the results are collected is irrelevant, as it is easy to ex
 the file path alongside the calculated checksum (it was omitted, as these tests are purely for benchmarking purposes).
 Therefore, the potential for a race condition when collecting the results is also resolved.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bchart}[step=50,max=400, unit=s]
         \bcbar [label=Original, no paralellization]{307}
@@ -213,7 +211,7 @@ This is especially true when the files are stored on a hard-drive ~\cite{PiotrPa
 
 Essentially, the threads are competing for the same resource (disk access), slowing each other down.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/checksum/io_multi_crc}
     \caption{Multithreaded CRC32 function, with dedicated IO thread.}
@@ -223,7 +221,7 @@ Essentially, the threads are competing for the same resource (disk access), slow
 A common solution is to introduce a dedicated IO thread (shown on ~\ref{fig:checksum_fig_6}), from which, each worker thread could
 receive the next piece of data to process.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{bchart}[step=50,max=400, unit=s]
         \bcbar[label=2 threads]{375}
@@ -268,7 +266,7 @@ while the system completes the request.
 When the client is ready to consume the results,
 it can access them from the CQ\@.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/checksum/uring_multi_crc}
     \caption{Implementation of the CRC32 function using io\_uring.}
@@ -281,7 +279,7 @@ don't have to stay idle until the read operation completes.
 This behaviour was achieved using a pair of buffers, where one buffer gets processed, while
 the other gets refilled.
 
-\begin{figure}[!htb]
+\begin{figure}[H]
     \centering
     \begin{bchart}[step=50,max=400, unit=s]
         \bcbar[label=2 threads]{213}
@@ -306,7 +304,7 @@ a different approach it could provide greater improvements.
 Finally, these benchmarks were executed on an SSD, which perform better when accessed in parallel.
 It is probable that, when ran on mechanical hard disk, the usage of io\_uring would achieve
 greater differences compared to the original parallel approach.
-\clearpage
+
 \subsection{Conclusion}
 First, these solutions are not fully optimized.
 There are countless ways to shave off a few seconds from each implementation.
