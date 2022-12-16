@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>20</y>
+      <w>320</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Package::DaemonCommon
+DaemonStatus
+--
+- INITIALIZING(number of remaining files),
+- PROCESSING(number of remaining files),
+- IDLING
+
+--
+Enum, listing the possible statuses
+the daemon might be in.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>20</y>
+      <w>300</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Package::DaemonCommon
+DaemonResponse
+--
+- responseId: uint
+- status: DaemonStatus
+- events: [DaemonEvent]
+- monitored [DaemonMonitoredItem]
+--
+Struct, describing the response
+to a status request from the client.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>710</x>
+      <y>20</y>
+      <w>300</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Package::DaemonCommon
+DaemonEvent
+--
+- path: String
+- crc32: uint
+- triggered: ulong (unix timestamp)
+- monitored [DaemonMonitoredItem]
+- kind: InotifyEvent
+--
+Struct, describing
+an event that occured since the last
+status request.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>240</y>
+      <w>300</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Package::DaemonCommon
+DaemonMonitoredItem
+--
+- path: String
+- crc32: uint
+- last_changed: ulong (unix timestamp)
+--
+Struct, describing a
+file that is being monitored
+by the daemon.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>240</y>
+      <w>420</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>Package::DaemonCommon
+InotifyEvent
+--
+- MODIFIED(filepath),
+- DELETED(filepath),
+- MODIFIED_PENDING,
+- MODIFIED_NO_CHANGE
+--
+Enum, representing
+the various events that may have
+occured.
+
+Note: MODIFIED_pending and MODIFIED_NO_CHANGE
+are not part of the inotify API, they are internal to
+the daemon.</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
