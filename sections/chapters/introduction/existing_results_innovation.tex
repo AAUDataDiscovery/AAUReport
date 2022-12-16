@@ -1,0 +1,57 @@
+\subsection{Existing Solutions on the Market}\label{subsec:existing_solutions_on_the_market}
+Initial market research led us to discover many already developed solutions for the implementation of a data catalog.
+We will look at three examples of data catalog solutions and outline their key features.
+Afterwards, we will present the main selling points of our own solution, explaining how it innovates the already
+established data discovery market.
+
+\subsubsection{Alation Data Catalog~\cite{AlationDataCatalog}}
+Alation's Data Catalog solution is focused on collaboration and connectivity.
+It has five broad, highlighted features:
+\begin{itemize}
+    \item A wide variety of data sources, such as relational databases, cloud data lakes, and file systems.
+    \item ``Seamless'' collaboration and realtime communication.
+    \item Natural language search.
+    \item The possibility to set rules and enforce policies.
+    \item APIs to connect data sources with off-the-shelf BI tools.
+\end{itemize}
+
+\subsubsection{IBM Watson Knowledge Catalog~\cite{IBMWatsonKnowledgeCatalog}}
+IBM's catalog highlights the benefits of AI-powered data discovery.
+Its main feature is its highly extensive search function.
+It allows users to search in plain English for tags or contents of their datasets.
+It also keeps a history of searches and offers recommendations based on it.
+Like the Alation Data Catalog, IBM also permits the creation and enforcement of rules and policies.
+Finally, IBM's Data Catalog creates graphs to visualize the data, but that function goes beyond the scope of our project
+(recall that our system is meant to provide meaning out of data such that it can be easily manipulated later, using data
+visualization tools).
+
+\subsubsection{Google Data Catalog~\cite{GoogleDataCatalog}}
+The Google Data Catalog is a service contained within the Dataplex product~\cite{GoogleDataplex}.
+Its functionality is rather simple, as it offers the possiblity to catalog data, generate metadata, and manually tag it.
+The primary selling point of Google Data Catalog is that it automatically extracts and catalogs data from its other
+products, such as BigQuery, Pub/Sub, and Cloud Storage thus leveraging its incredibly popular and vast library of
+data solutions.
+
+\bigbreak
+
+This information can help us determine what our project can innovate on the data cataloging scene.
+First of all, we need to include some essential features for our solution to be relevant.
+Among these, our system should be capable of processing various data formats, as real world sources generally produce
+(examples: CSV, JSON, XLS).
+Additionally, metadata should be at the forefront of our system's operations.
+Going a bit deeper, it appears that none of the existing products presented above focus on building connections between
+pieces of data.
+Automatic suggestions for how different datasets relate to each other, how similar they are, and whether they might
+belong in the same category, or might have the possibility of being merged together, is an incredibly useful feature
+for a data discovery system to offer.
+For example, a company that deals with sensors, receives dirty data from various sources, and could find it difficult
+to put it all together.
+A tool with these capabilities could inform the user if two sets of sensor readings are closely related, as they might
+be duplicate, or extracted at the same time, etc.
+This can extend to tagging.
+It is useful to allow the user to set manual tags, but recommending appropriate tags for newly cataloged datasets has
+the potential to speed up and simplify the organizational process.
+Naturally, tag suggestions would have to rely on already classified datasets (therefore requiring an already established
+collection of data), but this feature is still an example of a system becoming more efficient and easy to use over time.
+These features will become the highlights of our product and, put together and extended with additional functionality,
+can truly bring a fresh option on the market of data catalogs.
