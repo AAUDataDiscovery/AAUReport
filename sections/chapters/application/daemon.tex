@@ -44,7 +44,7 @@ Since the daemon will run as a separate process on the system, some form of inte
 must be utilized.
 For this project Unix Domain sockets were chosen due to their simplicity.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/daemon/socket_communication}
     \caption{Socket communication between server and client.}
@@ -60,7 +60,7 @@ The shutdown command, as the name suggests, instructs the daemon to shut down.
 It must be called explicitly, as the daemon runs as an independent process, therefore,
 terminating the library process, does not implicitly terminate the daemon.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/daemon/daemon_response}
     \caption{Status response, and accompanying structures.}
@@ -100,7 +100,7 @@ and populates the daemon's monitored array.
 Here, the Daemon enters a loop of waiting for incoming commands, and incoming
 checksum results until all the files have been processed.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/daemon/daemon_loop}
     \caption{Daemon main loop}
