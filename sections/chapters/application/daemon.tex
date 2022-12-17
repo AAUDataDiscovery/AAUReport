@@ -23,7 +23,7 @@ of the Discovery Library in any way.
 Moreover, if the library crashes for any reason, the files continue to be monitored,
 therefore the expensive process of calculating the checksums of all files doesn't have to be repeated.
 
-\subsection{Leveraging Inotify to Reduce the Number of Checksum Calculations}
+\subsection{Leveraging Inotify}
 As mention earlier, it is not realistic to continuously calculate the checksums of all files.
 
 Linux provides a useful API for these situations, inotify ~\cite{Inotify} (other platforms have similar tools available).
@@ -39,7 +39,7 @@ A simple example, why this is not sufficient to confidently detect changes would
 
 This simple bash command, would trigger an inotify event, but would not actually change the checksum of the file.
 
-\subsection{Communication Between the Daemon and the Library}
+\subsection{Interprocess Communication}
 Since the daemon will run as a separate process on the system, some form of interprocess communication (IPC) method
 must be utilized.
 For this project Unix Domain sockets were chosen due to their simplicity.
@@ -70,3 +70,67 @@ terminating the library process, does not implicitly terminate the daemon.
 
 The status command invokes the daemon to return the current state of the daemon ~\ref{fig:daemon_fig_2}, alongside the events occurred since the
 last status invocation (the event list gets cleared after each status request).
+
+\subsection{Implementation}
+In practice, the Daemon needs to orchestrate  multiple, independent
+processes:
+
+\begin{enumerate}
+    \item Listen to inotify events.
+    \item Hash files.
+    \item Listen to incoming commands from the unix domain socket.
+\end{enumerate}
+
+At startup, it must initialize.
+First, it starts the inotify thread - which creates all the
+inotify watches, and listens to events from the API\@.
+This way events are logged, even during the initialization process.
+
+Second, the daemon starts listening to incoming commands, this functionality was also
+forked into its own thread.
+
+Third, the daemon initializes its state object, from this point on,
+the client may send it status commands, and it will be able to communicate its state.
+Here, the DaemonStatus is INITIALIZING, with the count of the files that are yet to be
+processed.
+
+Finally, it starts a checksum thread, that will process all the subject file,
+and populates the daemon's monitored array.
+
+Here, the Daemon enters a loop of waiting for incoming commands, and incoming
+checksum results until all the files have been processed.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{figures/daemon/daemon_loop}
+    \caption{Daemon main loop}
+    \label{fig:daemon_fig_3}
+\end{figure}
+
+After the initialization completes, the daemon enters the main loop ~\ref{fig:daemon_fig_3}.
+It will stay in this loop until it receives a shutdown command from the client.
+The main benefit of this approach is that the various components don't block each other.
+Events, or commands will be handled, regardless if the daemon is also calculating checksums simultaneously.
+
+The threads communicate using MPSC queues, with the event loop essentially aggregating all the received messages
+from the helper threads.
+
+The Daemon relies on the previously detailed checksum algorithms, which do spawn additional worker threads.
+The only minor change from the implementations detailed previously is that the jobs aren't distributed at the start,
+rather they're assigned as they appear in thr queue (except during the initialization).
+
+
+In practice, the file monitor worked as expected.
+It was able to detect changes across various sized samples without much performance degradation.
+This low correlation between test file system size, and performance is due to inotify, which scales well with
+the file count.
+
+A potential source of performance degradation is the number of simultaneous modification events.
+There are some situations, where every file may be flagged at the same time as modified by inotify.
+However, these events are generally unusual for a typical environment, and there aren't any good
+way to get around the issue anyway.
+
+In conclusion, the file monitor daemon will enable real-time applications of
+the Data Discovery Library, where the users can monitor the state of their
+data effectively and without having to wait for costly and potentially
+unnecessary analysis.
