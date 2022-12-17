@@ -26,7 +26,7 @@ Column names are generated using random words, and the index column can be defin
 For numeric data, we chose to start off by modeling a sin wave with slight variance, which would easy to calculate, and
 would resemble simple repeating trends
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/data_generation/fake_data_gen_continuous_1}
     \caption{Visualisation of the data generation with 100 rows and 5 continuous columns, note that sin waves are all in phase}
@@ -64,7 +64,7 @@ We have also added additional parameters that can affect the slope, noise, and y
 As in the plot shown in figure~\ref{fig:datagen_fig_2} we can see this produces a line with varying trends, which can be used
 for trend analysis.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/data_generation/fake_data_linear_plot}
     \caption{A set of lines using the same noise, slope variance, and y-axis variance}
@@ -95,16 +95,17 @@ We provide additional options that allow more varied data sets:
 - \textbf{noise:} Generate a random number to modify each plot point
 
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{figures/data_generation/fake_data_sin_waves}
     \caption{A set of sin waves using the same noise, amplitude, and y-axis variance}
     \label{fig:datagen_fig_3}
 \end{figure}
 
-In practise, we can generate waves such as the one demonstrated in figure~\ref{fig:datagen_fig_3}, The results mean that we
-can reliably model data sets such as the climate data we explored earlier in figure~\ref{fig:real_data_climate_cph}.
+In practise, we can generate waves such as the one demonstrated in figure~\ref{fig:datagen_fig_3}, The results mean that
+we can reliably model data sets such as the climate data we explored earlier in figure~\ref{fig:real_data_climate_cph}.
 
 \subsubsection{Random Word}
 
-Generate a random word using the faker library
+In our first implementation we simply relied on the faker library to generate a random word, in order to model data sets
+such as the invoice time-series we observed earlier, we would have to build functionality that affects word probability.

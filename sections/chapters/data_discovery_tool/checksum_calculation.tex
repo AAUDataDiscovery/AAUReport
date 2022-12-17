@@ -32,7 +32,7 @@ CRCs are slower, but able to generate larger error runs.
 
 Since the generated values, are meant to be used as unique identifier for files and to track changes of the files, it's important
 to discuss collision rates. Figure ~\ref{fig:checksum_fig_1} shows the birthday problem in action.
-Essentially, if there are 77163 files, by using a 32-bit checksum, the odds of a collision is 50%.
+Essentially, if there are 77163 files, by using a 32-bit checksum, the odds of a collision is 50\%.
 
 Therefore, there must be a careful balance between performance and coliision rates.
 
@@ -87,7 +87,7 @@ Each of them iterate over a list of file paths, following these steps:
     \item Open file at offset (starting at 0).
     \item Create empty CRC32 generator.
     \item Read the contents into a 131.072 KB buffer (1024 * 128 bytes).
-    \item If EOF, push the generated checksum into a results' list (go to step 1).
+    \item If EOF, push the generated checksum into a list of results (go to step 1).
     \item otherwise update the generator with the content of the buffer.
     \item Increase the offset.
     \item Go to step 3.
@@ -112,8 +112,7 @@ there is a consistently reproducible speed increase when the CRC calculations ar
 
 \subsection{Comparison of various Checksum and CRC Algorithms}
 
-Having established that compiled solutions are the way forward.
-It was still important to compare various CRC and checksum algorithms.
+Having established that compiled solutions are the way forward, it was still important to compare various CRC and checksum algorithms.
 The main focus was on performance, as the various collision rates were already established.
 
 This project investigated three different algorithms (although there are many available).
@@ -203,7 +202,7 @@ ignores hyper-threading).
 \subsection{The IO Problem}
 Calculating checksums is a relatively efficient process, to the point that
 some processor instruction sets even include CRC32
-as a built-in instruction. ~\cite{CRC32Instruction}.
+as a built-in instruction~\cite{CRC32Instruction}.
 
 The main bottlenecks therefore, are the IO operations.
 This bottleneck becomes apparent when multiple checksums are calculated in parallel.
