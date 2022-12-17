@@ -15,8 +15,8 @@ Namely:
 \end{enumerate}
 
 The requirement for the pre-existing format is an obvious one.
-By using standardized formats such as XML we eliminate the need for custom tools to read the
-data generated.
+By using standardized formats such as XML, the need for custom tools to read the generated data would be
+eliminated.
 
 The second point is due to performance considerations.
 Generating and persisting the metadata must be
@@ -24,7 +24,7 @@ with as little disruption as possible, especially considering that IO resources 
 analysis is running.
 
 The third condition is concerned with portability.
-Ideally, the users of the library shouldn't be
+Ideally, the users of the library should not be
 forced to install any specialized applications just to read the metadata.
 Enforcing this point also reduces the complexity of the Data Discovery tool
 
@@ -232,7 +232,7 @@ This behaviour also has the benefit of acting as an implicit test to ensure that
 as intended.
 
 \subsection{Generalisation}
-Currently metadata exists rigidly to serve locally sourced CSV files.
+Currently metadata exists rigidly to serve locally sourced files.
 To distance the solution from this rigidness, some adjustments must be applied for generalisation of what data can be
 interpreted as.
 Similarly, a generalisation to the data represented in the columns will allow for less rigid explanations of the data
@@ -300,7 +300,7 @@ storage solution.
 Furthermore, column attributes have been separated into an ``attributes'' key - this allows the creation of columns that
 may have specific data sets with only specific sets of applicable attributes.
 
-In Future this solution allows metadata to describe data that has to be procured in different ways, such as a database
+In the future this solution allows metadata to describe data that has to be procured in different ways, such as a database
 connection, it also allows for big data solutions where the full data set can not feasibly be loaded at a single time.
 Lastly, for specialised data, column attributes can be constructed that offer more in-depth descriptions of the column,
 such as units for temperature data, or summations in e-commerce data.
