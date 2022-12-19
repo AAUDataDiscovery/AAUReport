@@ -72,17 +72,18 @@ We ran three algorithms on all pairs of terms in this list:
 \bigbreak
 
 We developed two different views of the results of these tests, to compare and contrast them.
-The first one is the table in fig~\ref{fig:lcs_levenshtein_wupalmer_results}.
+The first one is the table in fig~\ref{fig:lcs_results}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=12cm]{figures/names_lcs_levenshtein_wordnet_table}
-    \caption{Full results of LCS, Levenshtein, and Wu-Palmer on a list of column names}
-    \label{fig:lcs_levenshtein_wupalmer_results}
+    \includegraphics[width=12cm]{figures/discovery_strategy/names_lcs_levenshtein_wordnet_small}
+    \caption{Results of applying LCS on a list of column names}
+    \label{fig:lcs_results}
 \end{figure}
 
-Due to its size, it is difficult to extract any meaningful information from this table.
-Nevertheless, at a first glance, we can observe that the values in the LCS and Levenshtein tables are almost identical,
+This table is only a fragment of the results of running LCS, Levenshtein and Wu-Palmer on a list of column names.
+The full table is too large to include here.
+However, in the complete table, we can observe that the values in the LCS and Levenshtein tables are almost identical,
 while the Wu-Palmer table contains several zeroes.
 To understand these results a bit better, we will a second display method: the best three matches, ranked by percentage,
 for each column name.
