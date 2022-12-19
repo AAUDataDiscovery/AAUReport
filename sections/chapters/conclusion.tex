@@ -1,6 +1,31 @@
 \chapter{Conclusion}\label{ch:conclusion}
 
 \section{Answering The Problem Statement}
+
+\begin{itemize}
+    \item \texit{How can we design and implement a tool capable of analysing large amounts of data and extract relevant
+    information about its content?} \newline
+    Build metadata using a consistent schema and manage it in a scalable manner via a file monitoring system.
+    Compile a powerful library of data exploration and matching algorithms.
+    \item \texit{What are the existing tools in the industry capable of?} \newline
+    We determined that current data catalogs are capable of storing files, organizing them, but the tagging has to be done manually.
+    Also, they don't suggest logical connections and similarities between data, and they don't always support any format of
+    source material.
+    \item \texit{How can metadata help us produce meaningful information from seemingly arbitrary data?} \newline
+    By exposing properties that are not explicitly stated in the table rows and comparing them using the data matching library.
+    \item \texit{How can we categorize (or tag) datasets?} \newline
+    Allow the user to set meaningful tags, then use matching algorithms to automatically suggest appropriate tags for new
+    datasets.
+    This approach becomes more efficient as the catalog grows in size.
+    \item \texit{How can we compare datasets to identify similarities?} \newline
+    With various analysis algorithms, some leveraging the dataframe contents at the cost of performance, while others making
+    use of information available in the metadata, saving execution time.
+    \item \texit{WHow can we combine and visualize relevant results about a collection of datasets?} \newline
+    By designing a consistent metadata schema and displaying it, both in static documents, and in an interactive web client.
+\end{itemize}
+
+
+\section{Reflection}
 We started this project with the intent of building a tool that can take a dataset as input
 and produce some sort of insight into the data as an output.
 
