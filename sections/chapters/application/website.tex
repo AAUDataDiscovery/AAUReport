@@ -8,7 +8,7 @@ Our end goal for such a GUI would be to expose every functionality that the disc
 visualisation that requires very little understanding of the underlying logic.
 Once this is achieved, we can look into building more complex functionality that relies on the discovery tool.
 
-\subsection{data input}\label{subsec:data-input}
+\subsection{Data Input}\label{subsec:data-input}
 The first and simplest step we have is to read the data from somewhere.
 To do this we will simply create a folder on the filesystem that will be read from, we can then set up a callback
 to periodically check if there have been updates to the folder, which will allow us to inject files from any source.
@@ -19,7 +19,8 @@ to periodically check if there have been updates to the folder, which will allow
     \caption{Demonstrating that the files in the data folder are being read}\label{fig:catalogue_file_list}
 \end{figure}
 
-\subsection{displaying metadata}\label{subsec:displaying-metadata}
+\subsection{Displaying Metadata}\label{subsec:displaying-metadata}
+As we have created
 When choosing a data file to look at, we would like to start by providing an overview of the file, giving surface level
 information that a user can use to understand what they are looking at.
 In our case we have chosen the pertinent information to be as follows:

@@ -24,7 +24,7 @@ Column names are generated using random words, and the index column can be defin
 - \textbf{categorical:} Each index is a generated UUID
 
 For numeric data, we chose to start off by modeling a sin wave with slight variance, which would easy to calculate, and
-would resemble simple repeating trends
+would resemble simple repeating trends.
 
 \begin{figure}[H]
     \centering
@@ -33,7 +33,7 @@ would resemble simple repeating trends
     \label{fig:datagen_fig_1}
 \end{figure}
 
-For categorical data, we used the faker(TODO: REF HERE?) library to generate random words for each cell.
+For categorical data, we used the faker~\cite{PythonFaker} library to generate random words for each cell.
 
 While our first draft does not do a good job of modelling real world data, a lot of our discovery client features do not
 require any knowledge of the data, so this is an acceptably complete product until such features need to be tested.
@@ -72,7 +72,7 @@ for trend analysis.
 \end{figure}
 
 At a low noise level, linear plots such as this can be used to model data such as the dollar value data set we defined
-in figure~\ref{fig:real_data_inflation}\.
+in figure~\ref{fig:real_data_inflation}.
 There is one caveat however, our current implementation adds a completely random number within the variance - in reality
 higher variances are rarer, and our model should demonstrate this.
 This can be done by replacing the random noise integer with a normal distribution of noise values, and allowing the user
@@ -105,7 +105,11 @@ We provide additional options that allow more varied data sets:
 In practise, we can generate waves such as the one demonstrated in figure~\ref{fig:datagen_fig_3}, The results mean that
 we can reliably model data sets such as the climate data we explored earlier in figure~\ref{fig:real_data_climate_cph}.
 
-\subsubsection{Random Word}
+\subsubsection{Reflections}
 
-In our first implementation we simply relied on the faker library to generate a random word, in order to model data sets
-such as the invoice time-series we observed earlier, we would have to build functionality that affects word probability.
+Testing our functionality we have achieved an approximate generation of 1GB per minute.
+As all of our data generation is built to work in chunks, we can theoretically produce infinite data.
+
+Later we can use the data generator we have built here to stress test the application, as larger real world datasets are
+more difficult to procure, and to generate data for blackbox unit tests - which will allow us to test features of data
+rather than specific datasets that we have found.
