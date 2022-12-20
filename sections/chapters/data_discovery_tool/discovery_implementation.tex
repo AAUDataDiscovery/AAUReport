@@ -9,7 +9,7 @@ We have decided to implement the tool in python - as it is a language that allow
 libraries heavily geared towards data manipulation such as pandas~\cite{pythonpandas}, which we will take advantage of
 to provide performance efficient functionality.
 
-Next we choose our appropriate version control - here we will be using git, and using github~\cite{github} for our git
+Next we choose our appropriate version control - here we will be using git, and GitHub~\cite{github} for hosting our git
 repository.
 Using GitHub allows us to use the actions feature, which can run specific scripts depending on actions that occur within
 the repository - we will be using this feature aid with our testing and deployment.
@@ -35,10 +35,10 @@ product.
 For example, to load a file we might expect the user to import the library, then run a snippet such as
 ``\textbf{discovery.load\_files(path)}''.
 Following this process, we defined the resources that a user should be able to access once they have installed the
-library, they are as follows\:
+library, they are as follows:
 
 \bigbreak
-\textbf{utilities}
+\textbf{Utilities}
 
 - add a catalogue item
 
@@ -69,7 +69,9 @@ instantiate it, then access the methods inside of it.
 
 - construct a single metadata relationship based on input parameters
 
-for the purposes of users accessing the library, we have decided to separate metadata concerns from the
+In Section~\ref{sec:metadata} we have defined the format of the metadata, this Section will focus on building and
+consuming it.
+For the purposes of users accessing the library, we have decided to separate metadata concerns from the
 ``\textbf{discovery.py}'' entrypoint, this allows manipulation of metadata without having to interact with the other
 features we have built.
 Here we will take advantage of the python module initialisation functionality - users accessing metadata features
@@ -78,10 +80,10 @@ Additionally, we have created a set of metadata builders, which allow users to a
 based on the type of data set they are using - for example, to build a catalogue item using a csv, the user can invoke
 ``\textbf{discovery.metadata.from\_csv(<file\_path>)}''.
 These metadata builders allow us to create the more complex data loaders that we require for reading chunked data, this
-means that the user does not have to be responsible for finding ways to manage their memory.
+means that the user does not have to be responsible for finding ways to manage their RAM usage.
 
 \bigbreak
-\textbf{data matching}:
+\textbf{Column Matching}
 
 - expose each matching method as a class with input parameters, in the form of
 ``\textbf{discovery.data\_matcher.<matching\_method>(parameters)}''
@@ -103,7 +105,7 @@ a single confidence for each column intersection (modified by the weight of each
 \subsubsection{Testing}
 To ensure that the project maintains functionality despite changes that we make, we look towards unit tests as a metric
 that can be used to define success parameters to reach.
-The tool we rely on to perform this unit tests is pytest~\cite{PyTest}.
+The tool we rely on to perform this unit tests is PyTest~\cite{PyTest}.
 
 Previously in the approach section we defined two main functionalities that easily lend themselves to unit testing -
 the individual catalogue data builders, and the data matcher methods.
@@ -157,7 +159,7 @@ For this purpose we will be using the open source documentation tool~\cite{sphin
 documentation library that allows us to build documentation based on python docstrings.
 Using the auto documentation feature, we can build a static html file that lists the features of our application,
 allowing not only accessible, but easily updatable documentation.
-With the documentation html generated, we can use aws to host a static website that is publicly available.
+With the documentation html generated, we can use AWS to host a static website that is publicly available.
 
 \begin{figure}[H]
     \centering

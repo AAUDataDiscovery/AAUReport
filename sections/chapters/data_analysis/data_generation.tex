@@ -105,7 +105,11 @@ We provide additional options that allow more varied data sets:
 In practise, we can generate waves such as the one demonstrated in figure~\ref{fig:datagen_fig_3}, The results mean that
 we can reliably model data sets such as the climate data we explored earlier in figure~\ref{fig:real_data_climate_cph}.
 
-\subsubsection{Random Word}
+\subsubsection{Reflections}
 
-In our first implementation we simply relied on the faker library to generate a random word, in order to model data sets
-such as the invoice time-series we observed earlier, we would have to build functionality that affects word probability.
+Testing our functionality we have achieved an approximate generation of 1GB per minute.
+As all of our data generation is built to work in chunks, we can theoretically produce infinite data.
+
+Later we can use the data generator we have built here to stress test the application, as larger real world datasets are
+more difficult to procure, and to generate data for blackbox unit tests - which will allow us to test features of data
+rather than specific datasets that we have found.
