@@ -13,37 +13,37 @@ the data matching library.
 We consider these to be of critical importance, because the metadata is our chosen representation of information in the
 catalog and the matching library is the primary building tool that gathers and structures this information.
 Every other component has merely a supportive role.
-We describe the metadata in detail in section ~\ref{sec:metadata}, and the data matching library in sections
+We describe the metadata in detail in Section ~\ref{sec:metadata}, and the data matching library in Sections
 ~\ref{sec:discovery-strategy} and ~\ref{sec:the-data-matching-library}.
 
-We present implementation details in section ~\ref{sec:discovery-tool-implementation}, as a proof of concept of a system
+We present implementation details in Section ~\ref{sec:discovery-tool-implementation}, as a proof of concept of a system
 that can reliably make use of the algorithms included in the library.
-We include a web client in section ~\ref{sec:user-interface} that serves as both a management and display tool for the catalog.
+We include a web client in Section~\ref{sec:user-interface} that serves as both a management and display tool for the catalog.
 For example, the web client is capable of requesting random data to be generated for testing.
 Alternatively, for scenarios in which the user might need static reports instead of a full-blown web interface, we implemented
-a metadata visualizer (section ~\ref{sec:metadata-visualization}).
+a metadata visualizer (Section~\ref{sec:metadata-visualization}).
 
 The user interface can also be considered a use case of our product.
-There are many others we came up with to showcase the various capabilities of our tool, all of them described in chapter
-~\ref{ch:applications}.
+There are many others we came up with to showcase the various capabilities of our tool, all of them described in
+Chapter~\ref{ch:applications}.
 In our prototypes, we utilize two kinds of data.
 First, there is the real world data.
 The advantage of using this kind of data is that we can create a concrete demonstration of the tool's ability to solve problems
 encountered by potential users.
-The nature of these problems and how our data catalog might come in handy is explained in section ~\ref{sec:real-world-data}.
+The nature of these problems and how our data catalog might come in handy is explained in Section~\ref{sec:real-world-data}.
 Then, there is generated data.
 While modeled to reflect pattern that might be encountered in a real scenario, this data is clearly artificial (for example,
 it can be just a sine wave), but it has the potential to test the performance of our system, by providing us easy access
 to large amounts of it, without needing to access expensive sources.
-We built our own random data generator, which we showcase in section ~\ref{sec:random-data-generator}.
+We built our own random data generator, which we showcase in Section~\ref{sec:random-data-generator}.
 
 In order to reach the goal of high system performance, we asked ourselves the question of why or when we would generate or
 update metadata.
 The answer is, whenever a new file enters the catalog or when an existing file changes.
 Therefore, we need a way to check if a file was modified since the last metadata update and a component that can monitor
 these changes.
-The considerations behind checksum calculation can be found in section ~\ref{sec:checksum-calculation} and the file monitoring
-daemon is explained in section ~\ref{sec:daemonized-file-monitoring}.
+The considerations behind checksum calculation can be found in Section~\ref{sec:checksum-calculation} and the file monitoring
+daemon is explained in Section~\ref{sec:daemonized-file-monitoring}.
 In testing of this part of the system, we are making heavy use of random data created by our generator.
 
 With this design, we are aiming to achieve and demonstrate a number of key drivers behind a successful data catalog: scalability
