@@ -2,6 +2,119 @@
 
 \section{Answering The Problem Statement}
 
+\begin{itemize}
+    \item \texit{How can we design and implement a tool capable of analysing large amounts of data and extract relevant
+    information about its content?} \newline
+    Build metadata using a consistent schema and manage it in a scalable manner via a file monitoring system.
+    Compile a powerful library of data exploration and matching algorithms.
+    \item \texit{What are the existing tools in the industry capable of?} \newline
+    We determined that current data catalogs are capable of storing files, organizing them, but the tagging has to be done manually.
+    Also, they don't suggest logical connections and similarities between data, and they don't always support any format of
+    source material.
+    \item \texit{How can metadata help us produce meaningful information from seemingly arbitrary data?} \newline
+    By exposing properties that are not explicitly stated in the table rows and comparing them using the data matching library.
+    \item \texit{How can we categorize (or tag) datasets?} \newline
+    Allow the user to set meaningful tags, then use matching algorithms to automatically suggest appropriate tags for new
+    datasets.
+    This approach becomes more efficient as the catalog grows in size.
+    \item \texit{How can we compare datasets to identify similarities?} \newline
+    With various analysis algorithms, some leveraging the dataframe contents at the cost of performance, while others making
+    use of information available in the metadata, saving execution time.
+    \item \texit{How can we combine and visualize relevant results about a collection of datasets?} \newline
+    By designing a consistent metadata schema and displaying it, both in static documents, and in an interactive web client.
+\end{itemize}
+
+
+\section{Reflection}
+We started this project with the intent of building a tool that can take a dataset as input
+and produce some sort of insight into the data as an output.
+
+Initially, we only had a faint idea of what it means to \("\)understand\("\)
+the data.
+We were unsure if it was even realistic to create such a tool within the project's constraints.
+
+Therefore, we started small.
+Communicating basic things, such as column names, datatypes etc.
+were easy, but they were arguably among the most useful information we could relay to the users.
+
+At this point, we had a foothold, and we had a concept of what was next.
+We did slightly less obvious things, such as calculating the distance between strings or
+calculating correlations between columns.
+
+This simple toolset we had on our hands was already able to find implicit connections between
+otherwise disconnected files.
+In essence, we were closing in on our goal of providing insight into an otherwise, seemingly chaotic
+dataset.
+
+While finding meaning in the subject data was the core part of our project,
+it was by no means the only part of it.
+
+We were investigating ways to communicate our findings.
+The metadata generated as a result of these analyses will provide the users with useful information
+they can use to make better decisions.
+Moreover, it's done in such a way that the metadata may be passed to third-party tools and
+its functionality can be extended beyond its original purpose.
+
+One example of this extensibility is the visualizer, a simple tool we created, that only
+uses the metadata to create intuitive graphics of the structure of the files, and
+every piece of insight the library has outputted.
+
+But we also looked into other datasets,
+because how could we create a tool, that analyzes arbitrary datasets, if
+we didn't have a solid understanding of what was actually out there.
+
+This investigation later led to the idea of tagging.
+If we can reason that datasets will often fall into standard categories,
+then we can extend our tool to recognize these categories without human intervention.
+
+Of course, the initial implementation of the tagging is simple, reliant again on
+string distances and other rudimentary algorithms.
+But even with such a straightforward implementation, it performed unexpectedly well.
+Possibly providing the most intuitive form of understanding for humans.
+
+Therefore, in conclusion, not only did we create a tool that provides insight into arbitrary data,
+we organically created a tool that makes the whole analysis process easier.
+
+
 \section{Future Considerations}
+Of course, as with any other project, this one had its limitations as well, both
+in terms of time and personnel.
+We'd have loved to implement more data-matching algorithms,
+work on clustering, and other quality-of-life tools, such as an extended visualizer.
+
+The biggest opportunity for improvement would be to make the library more extensible,
+and configurable.
+
+Its users should be able to write their own matching or tagging algorithms and have
+them used by the core library, preferably without the users having to have an in-depth
+understanding of the library's inner workings.
+
+Another opportunity that couldn't be implemented on time was the live analysis.
+While the file daemon was available on time, at this point running the matching
+and tagging algorithms is a static process, executed manually by the users
+whenever they need it.
+
 
 \section{Discussion}
+
+When we received the project's description it was intentionally vague.
+This was not a problem, it was an opportunity.
+We were expected to make the project our own.
+An unexpected side benefit of this vagueness was that not only, we as a team
+made the project our own, but each team member made the project their own, in their way.
+
+Because we are all different people, with different interests, when we looked at the problem, we saw different parts of a picture.
+Therefore, we diverged.
+Some of us stayed on topic and focused on data matching.
+Some focused on performance, while others focused on infrastructure, and scaffolding or
+just acting as floating agents, helping out wherever possible.
+
+Ultimately, however, when all the pieces fell together, we ended up with something coherent, the whole picture.
+Since our interests and focuses were so varied, we also ended up learning from each other,
+if for nothing else, just to keep up with each other.
+
+To summarize, from an indistinct kernel of an idea, we ended up with something
+that could objectively be considered useful.
+While in the meantime learning new concepts and ideas we wouldn't normally encounter in our
+everyday life.
+
