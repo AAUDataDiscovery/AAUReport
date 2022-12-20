@@ -24,7 +24,7 @@ Column names are generated using random words, and the index column can be defin
 - \textbf{categorical:} Each index is a generated UUID
 
 For numeric data, we chose to start off by modeling a sin wave with slight variance, which would easy to calculate, and
-would resemble simple repeating trends
+would resemble simple repeating trends.
 
 \begin{figure}[H]
     \centering
@@ -33,7 +33,7 @@ would resemble simple repeating trends
     \label{fig:datagen_fig_1}
 \end{figure}
 
-For categorical data, we used the faker(TODO: REF HERE?) library to generate random words for each cell.
+For categorical data, we used the faker~\cite{PythonFaker} library to generate random words for each cell.
 
 While our first draft does not do a good job of modelling real world data, a lot of our discovery client features do not
 require any knowledge of the data, so this is an acceptably complete product until such features need to be tested.
@@ -72,7 +72,7 @@ for trend analysis.
 \end{figure}
 
 At a low noise level, linear plots such as this can be used to model data such as the dollar value data set we defined
-in figure~\ref{fig:real_data_inflation}\.
+in figure~\ref{fig:real_data_inflation}.
 There is one caveat however, our current implementation adds a completely random number within the variance - in reality
 higher variances are rarer, and our model should demonstrate this.
 This can be done by replacing the random noise integer with a normal distribution of noise values, and allowing the user
